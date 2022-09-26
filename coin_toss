@@ -1,0 +1,81 @@
+# 뭐 고르기 힘들때 동전던지시면 됩니다, 앞면 또는 뒷면
+
+#1 main_Activity.kt
+
+package com.example.tosscoin
+
+import android.media.MediaPlayer
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
+import android.widget.Button
+import android.widget.ImageView
+import java.util.Timer
+import kotlin.concurrent.schedule
+
+ class MainActivity : AppCompatActivity() {
+
+    var state: Int = 1 //앞 쪽값 설정 1
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
+
+        var tossButton = findViewById(R.id.Toss) as Button
+        var coinImage = findViewById(R.id.Coinimage) as ImageView
+
+        tossButton.setOnClickListener {
+
+            // 동전이 튕겨질때 소리가 나는 부분입니다
+
+            var animation: Animation = AnimationUtils.loadAnimation(this,R.anim.coin_effect)
+            coinImage.startAnimation(animation)
+
+
+            var mediaPlayer: MediaPlayer? = MediaPlayer.create(this, R.raw.coin_effect)
+            mediaPlayer?.start()
+
+            // 2.2초로 동전결과가 바로나오지않고 시간을 두고 나오게 한것입니다.
+            Timer().schedule(2200) {
+                state = (0..1).random()
+
+                if (state==0) {
+                    coinImage.setImageResource(R.drawable.coin_back)
+                } else {
+                    coinImage.setImageResource(R.drawable.coin_front)
+                }
+
+
+
+                }
+            }
+
+
+
+        }
+    } #애니메이션 철자에 주의하세요 a하나 빼먹고 3일동안 고민함
+    ------------------------------------------------------------------------------
+    #2
+    
+    coin_effect.xml
+    
+    # 안드로이드 사진, 각종 xy축 설정, 동전 반복횟수입니다.
+    <?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <rotate
+        android:duration="2500"
+        android:fromDegrees="0"
+        android:pivotX="50%"
+        android:pivotY="50%"
+        android:toDegrees="7200"
+        />
+
+    <translate
+        android:duration="1000"
+        android:fromYDelta="0"
+        android:repeatCount="1"
+        android:repeatMode="reverse"
+        android:toYDelta="-200%"
+        />
+</set>
